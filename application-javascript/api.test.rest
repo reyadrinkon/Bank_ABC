@@ -1,0 +1,57 @@
+GET http://localhost:3000/
+
+###
+GET http://localhost:3000/book
+
+
+###
+POST http://localhost:3000/register
+content-type: application/json
+
+{
+    "key":"2330",
+    "email": "sagor@gmail.com",
+    "password": "rinkon1234",
+    "name": "sagor"
+}
+
+###
+POST http://localhost:3000/depositmoney
+content-type: application/json
+
+{
+    "key":"100",
+    "amount":"1500"
+}
+
+###
+POST http://localhost:3000/withdrawmoney
+content-type: application/json
+
+{
+    "key":"100",
+    "password": "rinkon1234",
+    "amount":"15"
+}
+
+###
+POST http://localhost:3000/sendmoney
+content-type: application/json
+
+{
+    "from_key":"100",
+    "to_key":"200",
+    "from_password": "rinkon1234",
+    "amount":"57"
+}
+
+###
+POST http://localhost:3000/checkbalance
+content-type: application/json
+
+{
+    "key":"100",
+    "password": "rinkon1234",
+}
+
+###
