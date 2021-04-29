@@ -6,7 +6,7 @@
 
 'use strict';
 
-const tDrive = require('./lib/tDrive');
+const bankabc = require('./lib/bankabc');
 
-module.exports.TDrive = tDrive;
-module.exports.contracts = [tDrive];
+module.exports.Bankabc = bankabc;
+module.exports.contracts = [bankabc];
