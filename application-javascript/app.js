@@ -13,7 +13,7 @@ const { buildCAClient, registerAndEnrollUser, enrollAdmin } = require('../../tes
 const { buildCCPOrg1, buildWallet } = require('../../test-application/javascript/AppUtil.js');
 
 const channelName = 'mychannel';
-const chaincodeName = 'bbbba';
+const chaincodeName = 'p22';
 const mspOrg1 = 'Org1MSP';
 const walletPath = path.join(__dirname, 'wallet');
 const org1UserId = 'appUser';
@@ -38,6 +38,8 @@ async function main() {
 
 		const gateway = new Gateway();
 
+
+
 		try {
 			await gateway.connect(ccp, {
 				wallet,
@@ -48,6 +50,7 @@ async function main() {
 			const network = await gateway.getNetwork(channelName);
 
 			const contract = network.getContract(chaincodeName);
+			await contract.submitTransaction('InitLedger');
 
 
 
@@ -81,14 +84,17 @@ async function main() {
             {
             res.send('Hello Book readers!');
             });
+
 			app.post('/register',async function(req, res){
 				const {key, email ,password ,name }=req.body;
 
 			try {
 				let result =await contract.evaluateTransaction('CreateUser', key, email, password,name );
 
+
 				await contract.submitTransaction('CreateUser', key, email, password,name );
 				res.send(result.toString());
+				
 
 			} catch (error) {
 				//console.log(`*** Error: \n    ${error}`);
@@ -135,26 +141,25 @@ async function main() {
 				res.send(result.toString());
 
 			} catch (error) {
-				res.error(error.toString());
+				res.send(error.toString());
 			}
 
 			});
 
 			app.post('/checkbalance',async function(req, res){
-				const {key, password }=req.body;
+				const {key, password}=req.body;
 
 			try {
-				let result =await contract.evaluateTransaction('CheckBalance', key, password );
+				let result =await contract.evaluateTransaction('CheckBalance', key,password );
 
-				await contract.submitTransaction('CheckBalance', key, password );
+				await contract.submitTransaction('CheckBalace', key,password);
 				res.send(result.toString());
 
 			} catch (error) {
-				res.error(error.toString());
+				res.send(error.toString());
 			}
 
 			});
-
 
 
 			// app.post('/register', async function (req, res) {
