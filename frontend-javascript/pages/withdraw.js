@@ -50,16 +50,21 @@ export  default function RegisterPage() {
 
 
         });
-        //const data = await response.json();
-        //console.log(data);
-        await Router.push('/');
+        const data = await response.json();
+        if ('error' in data) {
+            alert("Money withdrawl Failed\n Possible reasons \n1.You dont have that much money \n2.Password doesnt match");
+        } else {
+            alert("Money withdrawll Successfull");
+
+            await Router.push('/');
+        }
     };
 
     return (
         <Form {...layout} name="nest-messages" onFinish={handleSubmit} validateMessages={validateMessages}>
             <Form.Item
                 name={['user', 'key']}
-                label="Key"
+                label="Account No"
                 rules={[
                     {
                         required: true,
@@ -97,7 +102,7 @@ export  default function RegisterPage() {
 
             <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 4 }}>
                 <Button type="primary" htmlType="submit">
-                    Register
+                    Withdraw
                 </Button>
             </Form.Item>
         </Form>
