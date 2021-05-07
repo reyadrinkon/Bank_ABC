@@ -49,16 +49,21 @@ export  default function RegisterPage() {
 
 
         });
-        //const data = await response.json();
-        //console.log(data);
-        await Router.push('/');
+        const data = await response.json();
+        if ('error' in data) {
+            alert("Money Deposition Failed\n Possible reason \n1.There is no account against this NID");
+        } else {
+            alert("Money Deposition Successfull");
+
+            await Router.push('/');
+        }
     };
 
     return (
         <Form {...layout} name="nest-messages" onFinish={handleSubmit} validateMessages={validateMessages}>
             <Form.Item
                 name={['user', 'key']}
-                label="Key"
+                label="Account Number"
                 rules={[
                     {
                         required: true,
@@ -84,7 +89,7 @@ export  default function RegisterPage() {
 
             <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 4 }}>
                 <Button type="primary" htmlType="submit">
-                    Register
+                    Deposit
                 </Button>
             </Form.Item>
         </Form>
