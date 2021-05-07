@@ -37,6 +37,10 @@ export  default function RegisterPage() {
             password : password,
             name : name,
         };
+        console.log("requestbody");
+        //alert("successfull"+values.user.name+" Added successfull");
+        console.log(requestBody);
+
 
         const response = await fetch(url, {
             method: 'POST',
@@ -51,16 +55,24 @@ export  default function RegisterPage() {
 
 
         });
-        //const data = await response.json();
-        //console.log(data);
-        await Router.push('/');
+        const data = await response.json();
+        console.log("data");
+        console.log(data);
+        if ('error' in data) {
+            alert("Registration Failed\n Possible reasons \n1.The key doesnt match with Our citizen Database \n2.The person is not 18 years old\n3.The account already exists");
+        } else {
+            alert("Registration Successfull \nName:"+values.user.name+"\nAccount No :"+values.user.key+"\n Please remember your password and Account No.");
+
+            await Router.push('/');
+        }
+
     };
 
     return (
         <Form {...layout} name="nest-messages" onFinish={handleSubmit} validateMessages={validateMessages}>
             <Form.Item
                 name={['user', 'key']}
-                label="Key"
+                label="NID"
                 rules={[
                     {
                         required: true,
