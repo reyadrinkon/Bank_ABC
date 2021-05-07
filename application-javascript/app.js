@@ -93,12 +93,21 @@ async function main() {
 
 
 				await contract.submitTransaction('CreateUser', key, email, password,name );
-				res.send(result.toString());
+				//res.send(result.toString());
+				res.json({
+					message : result.toString()
+				})
+			
+
 				
 
 			} catch (error) {
 				//console.log(`*** Error: \n    ${error}`);
-				res.send(error.toString());
+				//res.send(error.toString());
+				res.json({
+					error : error.toString()
+				})
+
 			}
 
 			});
@@ -109,10 +118,14 @@ async function main() {
 				let result =await contract.evaluateTransaction('DepositMoney', key, amount );
 
 				await contract.submitTransaction('DepositMoney', key, amount );
-				res.send(result.toString());
+				res.json({
+					message : result.toString()
+				})
 
 			} catch (error) {
-				res.send(error.toString());
+				res.json({
+					error : error.toString()
+				})
 			}
 
 			});
@@ -124,10 +137,14 @@ async function main() {
 				let result =await contract.evaluateTransaction('WithDrawMoney', key,password ,amount );
 
 				await contract.submitTransaction('WithDrawMoney', key,password ,amount );
-				res.send(result.toString());
+				res.json({
+					message : result.toString()
+				})
 
 			} catch (error) {
-				res.send(error.toString());
+				res.json({
+					error : error.toString()
+				})
 			}
 
 			});
@@ -138,28 +155,20 @@ async function main() {
 				let result =await contract.evaluateTransaction('SendMoney', from_key,to_key,from_password ,amount );
 
 				await contract.submitTransaction('SendMoney', from_key,to_key,from_password,amount );
-				res.send(result.toString());
+				res.json({
+					message : result.toString()
+				})
 
 			} catch (error) {
-				res.send(error.toString());
+				res.json({
+					error : error.toString()
+				})
 			}
 
 			});
 
-			app.post('/checkbalance',async function(req, res){
-				const {key, password}=req.body;
 
-			try {
-				let result =await contract.evaluateTransaction('CheckBalance', key,password );
 
-				await contract.submitTransaction('CheckBalace', key,password);
-				res.send(result.toString());
-
-			} catch (error) {
-				res.send(error.toString());
-			}
-
-			});
 
 
 			// app.post('/register', async function (req, res) {
