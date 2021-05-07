@@ -13,7 +13,7 @@ const { buildCAClient, registerAndEnrollUser, enrollAdmin } = require('../../tes
 const { buildCCPOrg1, buildWallet } = require('../../test-application/javascript/AppUtil.js');
 
 const channelName = 'mychannel';
-const chaincodeName = 'ppt';
+const chaincodeName = 'p11';
 const mspOrg1 = 'Org1MSP';
 const walletPath = path.join(__dirname, 'wallet');
 const org1UserId = 'appUser';
@@ -47,6 +47,7 @@ async function main() {
 			const network = await gateway.getNetwork(channelName);
 
 			const contract = network.getContract(chaincodeName);
+			await contract.submitTransaction('InitLedger');
 
 
 
