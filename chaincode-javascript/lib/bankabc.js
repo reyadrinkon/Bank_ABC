@@ -11,7 +11,7 @@
 
 const {Contract} = require('fabric-contract-api');
 
-class TDrive extends Contract {
+class Bankabc extends Contract {
   async InitLedger(ctx) {
     const citizens = [
       {
@@ -92,14 +92,17 @@ class TDrive extends Contract {
   async CreateUser(ctx, key, email, password, name) {
     let balance=0;
 
-    let accountAsBytes = await ctx.stub.getState(key);
-    if (!accountAsBytes || !accountAsBytes.toString()) {
+    let assetAsBytes = await ctx.stub.getState(key);
+    if (!assetAsBytes || !assetAsBytes.toString()) {
+
+
       throw new Error(`Citizen With NID:${key} does not exist in Bangladesh national Database`);
+
     }
 
     let TargetAccount = {};
     try {
-      TargetAccount = JSON.parse(accountAsBytes.toString()); //unmarshal
+      TargetAccount = JSON.parse(assetAsBytes.toString()); //unmarshal
     } catch (err) {
       let jsonResp = {};
       jsonResp.error = 'Failed to decode JSON of: ' + key;
@@ -108,9 +111,14 @@ class TDrive extends Contract {
     // if(TargetAccount.Name !== name){
     //     throw new  Error (`This name with NID:${key} doesnt match with Bangladesh National Database`) ;
     // }
+    if(TargetAccount.Password)
+    {
+      throw new Error(`Account Already exist!`);
+    }
 
-    if(parseInt(TargetAccount.DOB)> parseInt(2003)){
-      throw new  Error (`You are not old enough to open a Bank account`);
+    if(parseInt(TargetAccount.DOB) > parseInt(2003)){
+
+      throw new Error(`You are not old enough to open a Bank account`);
     }
 
     const user  = {
@@ -119,10 +127,11 @@ class TDrive extends Contract {
       Password: password,
       Name: name,
       Balance: balance,
-      Doctype:'user'
+      Doctype:'Account Holder'
     };
     ctx.stub.putState(key, Buffer.from(JSON.stringify(user)));
     //return JSON.stringify(user);
+    //alert("Account create successfull");
     return(`Account Create Successfull \nAccount Holder name: ${user.Name} \nAccount key:${user.Key} \n\nPlease remember the password you gave.Without password you will not be able to withdraw or send money`)
   }
   //------------------------------------------------------------------------------
@@ -146,13 +155,13 @@ class TDrive extends Contract {
 
   async DepositMoney(ctx, key, amount) {
 
-    let accountAsBytes = await ctx.stub.getState(key);
-    if (!accountAsBytes || !accountAsBytes.toString()) {
+    let assetAsBytes = await ctx.stub.getState(key);
+    if (!assetAsBytes || !assetAsBytes.toString()) {
       throw new Error(`Account ${key} does not exist`);
     }
     let TargetAccount = {};
     try {
-      TargetAccount = JSON.parse(accountAsBytes.toString()); //unmarshal
+      TargetAccount = JSON.parse(assetAsBytes.toString()); //unmarshal
     } catch (err) {
       let jsonResp = {};
       jsonResp.error = 'Failed to decode JSON of: ' + key;
@@ -194,14 +203,14 @@ class TDrive extends Contract {
   //--------------------------------------------------------------------------------
   async WithDrawMoney(ctx, key,password, amount) {
 
-    let accountAsBytes = await ctx.stub.getState(key);
-    if (!accountAsBytes || !accountAsBytes.toString()) {
+    let assetAsBytes = await ctx.stub.getState(key);
+    if (!assetAsBytes || !assetAsBytes.toString()) {
       throw new Error(`Account ${key} does not exist`);
     }
 
     let TargetAccount = {};
     try {
-      TargetAccount = JSON.parse(accountAsBytes.toString()); //unmarshal
+      TargetAccount = JSON.parse(assetAsBytes.toString()); //unmarshal
     } catch (err) {
       let jsonResp = {};
       jsonResp.error = 'Failed to decode JSON of: ' + key;
@@ -218,16 +227,39 @@ class TDrive extends Contract {
 
     let assetJSONasBytes = Buffer.from(JSON.stringify(TargetAccount));
     await ctx.stub.putState(key, assetJSONasBytes); //rewrite the asset
-    return (`withdrawal successfull\nAmount withdrawed:taka${amount} only`);
+    return (`withdrawal successfull\nAmount withdrawed:taka${amount} only\nAccount Holder Name:${TargetAccount.Name}\nNew Balance:${TargetAccount.Balance} only`);
   }
- 
+  async CheckBalance(ctx, key,password) {
+
+    let assetAsBytes = await ctx.stub.getState(key);
+    if (!assetAsBytes || !assetAsBytes.toString()) {
+      throw new Error(`Account  ${key} does not exist against this NID`);
+    }
+
+    let TargetAccount = {};
+    try {
+      TargetAccount = JSON.parse(assetAsBytes.toString()); //unmarshal
+    } catch (err) {
+      let jsonResp = {};
+      jsonResp.error = 'Failed to decode JSON of: ' + key;
+      throw new Error(jsonResp);
+    }
+    if(TargetAccount.Password !== password){
+      throw new  Error (`This password with key: ${key} doesnt match`) ;
+    }
+
+
+
+    let assetJSONasBytes = Buffer.from(JSON.stringify(TargetAccount));
+    await ctx.stub.putState(key, assetJSONasBytes); //rewrite the asset
+    return (`Request successfull\Account Holder Name${TargetAccount.Name} \nAccount Balance:${TargetAccount.Balance}\n only`);
+  }
 
   async SendMoney(ctx,from_key,to_key,from_password,amount){
 
     await this.WithDrawMoney(ctx,from_key,from_password,amount);
 
     await this.DepositMoney(ctx,to_key,amount);
-   return(`Send money succesfull \n Money sent from Account:${from_key}\n Money sent to:${to_key}\nAmount:${amount}`);
   }
 
   async citizenExist(ctx, putNID) {
