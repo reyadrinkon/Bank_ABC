@@ -51,16 +51,21 @@ export  default function RegisterPage() {
 
 
         });
-        //const data = await response.json();
-        //console.log(data);
-        await Router.push('/');
+        const data = await response.json();
+        if ('error' in data) {
+            alert("Sending Money Failed\n Possible reasons \n1.Your password doesnt match \n2.You dont have that much money\n3.Wrong sending key");
+        } else {
+            alert("Sending Money Successfull \nFrom:"+values.user.from_key+"\nTo :"+values.user.to_key+"\nAmount."+values.user.amount);
+
+            await Router.push('/');
+        }
     };
 
     return (
         <Form {...layout} name="nest-messages" onFinish={handleSubmit} validateMessages={validateMessages}>
             <Form.Item
                 name={['user', 'from_key']}
-                label="Sender's Key"
+                label="Sender's Account No"
                 rules={[
                     {
                         required: true,
@@ -72,7 +77,7 @@ export  default function RegisterPage() {
 
             <Form.Item
                 name={['user', 'to_key']}
-                label="Receiver's Key"
+                label="Receiver's Account No"
                 rules={[
                     {
                         required: true,
@@ -110,7 +115,7 @@ export  default function RegisterPage() {
 
             <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 4 }}>
                 <Button type="primary" htmlType="submit">
-                    Register
+                    Send
                 </Button>
             </Form.Item>
         </Form>
