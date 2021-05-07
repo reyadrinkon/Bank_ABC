@@ -43,7 +43,8 @@ export default function Home() {
             <h3>Send Money from one account to another &rarr;</h3>
             <p>You have to provide sender and reciever NID and sender's password.</p>
           </a>
-         
+          
+
 
         </div>
       </main>
